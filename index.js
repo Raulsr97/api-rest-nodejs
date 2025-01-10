@@ -18,16 +18,26 @@ app.get('/nuevo-endpoint', (req, res) => {
   res.send('nuevo endpoint')
 })
 
-// ejemplo de como se maneja una entrada a una ruta de productos, respondiendo con un código de estado y un json(por lo general se responde de esta manera)
+// Solicitud para obtener productos
 app.get('/products', (req, res) =>  {
-  const products = []
-  for (let index = 0; index < 100; index++) {
+  const products = [] // Array donde se almacenaran los productos
+  const { size } = req.query // query de tamaño
+  const limit = size || 10 // limite de productos, si no recibe un query por defecto retornara 10
+  // ciclo para insertar productos al array
+  for (let index = 0; index < limit; index++) {
     products.push({
       name: faker.commerce.productName(),
-      price: faker.commerce.price()
+      price: parseInt(faker.commerce.price()),
+      image: faker.image.url()
     })
   }
+  // Retorna el array de productos en formato json
   res.json(products)
+})
+
+// Los endpoints de forma especifica deben ir antes de los que son de forma dinámica para evitar choques entre endpoints
+app.get('/products/filter', (req, res) => {
+  res.send('soy un filter')
 })
 
 // Esta solicitud responde con un producto en especifico
@@ -40,6 +50,8 @@ app.get('/products/:id', (req, res) => {
     isAvailable: true
   })
 })
+
+
 
 // Solicitud con query params(opcionales), solo muestra como funcionan
 app.get('/users', (req, res) => {
