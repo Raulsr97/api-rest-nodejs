@@ -1,13 +1,13 @@
-// Importamos faker para poder trabajar con data de prueba
-const { faker } = require('@faker-js/faker')
 // Importamos express
 const express = require('express')
-// Importamos el archivo index wue va a manejar las rutas
+// Importamos el archivo index que va a manejar las rutas
 const routerApi = require('./routes')
 // Creamos una intancia de express, sirve para manejar rutas, solicitudes y respuestas
 const app = express()
 // Puerto donde va a correr la aplicacion
 const port = 3000
+// importamos middlewares de error
+const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
 
 // Middleware para analizar JSON
 app.use(express.json())
@@ -24,6 +24,11 @@ app.get('/nuevo-endpoint', (req, res) => {
 })
 
 routerApi(app)
+
+// Los middlewares de tipo error se deben usar despues de definir el routing
+app.use(logErrors)
+app.use(boomErrorHandler)
+app.use(errorHandler)
 
 
 // Inicia el servidor en un puerto específico

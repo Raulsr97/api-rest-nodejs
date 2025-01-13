@@ -7,9 +7,9 @@ const service = new ProductsService()
 
 
 // Solicitud para obtener productos
-router.get('/', (req, res) =>  {
+router.get('/', async (req, res) =>  {
   // Obteniendo una lista de productos directamente del servicio
-  const products = service.find()
+  const products = await service.find()
   // Retorna el array de productos en formato json
   res.json(products)
 })
@@ -20,35 +20,49 @@ router.get('/filter', (req, res) => {
 })
 
 // Esta solicitud responde con un producto en especifico
-router.get('/:id', (req, res) => {
-  const { id } = req.params
-  // Obtengo el producto directamente del servicio
-  const product = service.findOne(id)
-  res.json(product)
+router.get('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params
+    // Obtengo el producto directamente del servicio
+    const product = await service.findOne(id)
+    res.json(product)
+  } catch (err) {
+    next(err)
+  }
 })
 
 // Solicitud para crear un nuevo producto
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // Almacenamos el cuerpo de la solictud
   const body = req.body
-  const newProduct = service.create(body)
+  const newProduct = await service.create(body)
   // respondemos en json con un mensaje de creacion y la data con la que se va a crear el producto
   res.status(201).json(newProduct)
 })
 
 // Actualizar un producto
-router.put('/:id', (req, res) => {
-  const { id } = req.params
-  const body = req.body
-  const updatedProduct = service.update(id, body)
-  res.json(updatedProduct)
+router.put('/:id', async(req, res, next) => {
+  try {
+    const { id } = req.params
+    const body = req.body
+    const updatedProduct = await service.update(id, body)
+    res.json(updatedProduct)
+  } catch (err) {
+    next(err)
+  }
+
 })
 
 // Eliminar un producto
-router.delete('/:id', (req, res) => {
-  const { id } = req.params
-  const rta = service.delete(id)
-  res.json(rta)
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const rta = await service.delete(id)
+    res.json(rta)
+  } catch (err) {
+    next(err)
+  }
+
 })
 
 module.exports = router
