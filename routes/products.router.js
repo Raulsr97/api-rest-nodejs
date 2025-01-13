@@ -1,5 +1,7 @@
 const express = require('express')
 const ProductsService = require('../services/products.service')
+const validatorHandler = require('../middlewares/validator.handler')
+const { getProductSchema, updateProductSchema, createProductSchema } = require('../schemas/product.schema')
 
 const router = express.Router()
 // creamos una nueva instancia del servicio de productos
@@ -20,7 +22,9 @@ router.get('/filter', (req, res) => {
 })
 
 // Esta solicitud responde con un producto en especifico
-router.get('/:id', async (req, res, next) => {
+router.get('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
   try {
     const { id } = req.params
     // Obtengo el producto directamente del servicio
@@ -32,16 +36,25 @@ router.get('/:id', async (req, res, next) => {
 })
 
 // Solicitud para crear un nuevo producto
-router.post('/', async (req, res) => {
-  // Almacenamos el cuerpo de la solictud
-  const body = req.body
-  const newProduct = await service.create(body)
-  // respondemos en json con un mensaje de creacion y la data con la que se va a crear el producto
-  res.status(201).json(newProduct)
+router.post('/',
+  validatorHandler(createProductSchema, 'body'),
+  async (req, res, next) => {
+  try {
+    // Almacenamos el cuerpo de la solictud
+    const body = req.body
+    const newProduct = await service.create(body)
+    // respondemos en json con un mensaje de creacion y la data con la que se va a crear el producto
+    res.status(201).json(newProduct)
+  } catch (err) {
+    next(err)
+  }
+
 })
 
 // Actualizar un producto
-router.put('/:id', async(req, res, next) => {
+router.put('/:id',
+  validatorHandler(updateProductSchema, 'params'),
+  async (req, res, next) => {
   try {
     const { id } = req.params
     const body = req.body
