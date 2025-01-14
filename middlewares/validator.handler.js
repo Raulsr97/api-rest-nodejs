@@ -14,7 +14,7 @@ function validatorHandler (schema, property) {
     // - `schema.validate(data)` devuelve un objeto que contiene:
     //   - `value`: Los datos validados.
     //   - `error`: Un error si la validación falla.
-    const { error } = schema.validate(data)
+    const { error } = schema.validate(data, { abortEarly: false})
     // Si hay un error en la validación, entra en esta condición.
     if (error) {
       next(boom.badRequest(error))

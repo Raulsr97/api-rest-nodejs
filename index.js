@@ -3,11 +3,15 @@ const express = require('express')
 // Importamos el archivo index que va a manejar las rutas
 const routerApi = require('./routes')
 // Creamos una intancia de express, sirve para manejar rutas, solicitudes y respuestas
+const cors = require('cors')
 const app = express()
 // Puerto donde va a correr la aplicacion
 const port = 3000
 // importamos middlewares de error
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
+
+// Configuracion basica, permite todas las solicitudes
+app.use(cors())
 
 // Middleware para analizar JSON
 app.use(express.json())

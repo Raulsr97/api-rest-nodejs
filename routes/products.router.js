@@ -53,6 +53,7 @@ router.post('/',
 
 // Actualizar un producto
 router.put('/:id',
+  validatorHandler(getProductSchema, 'params'),
   validatorHandler(updateProductSchema, 'params'),
   async (req, res, next) => {
   try {
